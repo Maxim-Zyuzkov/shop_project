@@ -1,0 +1,232 @@
+/* ========================
+   1. СБРОС И БАЗОВЫЕ СТИЛИ
+   ======================== */
+body {
+    background-color: #f8f9fa;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    overflow-x: hidden;
+}
+
+/* ========================
+   2. АНИМАЦИИ ПОЯВЛЕНИЯ
+   ======================== */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.animate-on-scroll {
+    opacity: 0; /* Скрыто по умолчанию */
+    animation: fadeInUp 0.8s ease-out forwards;
+}
+
+/* Задержки для каскадного появления (эффект волны) */
+.delay-1 { animation-delay: 0.1s; }
+.delay-2 { animation-delay: 0.2s; }
+.delay-3 { animation-delay: 0.3s; }
+.delay-4 { animation-delay: 0.4s; }
+.delay-5 { animation-delay: 0.5s; }
+.delay-6 { animation-delay: 0.6s; }
+
+/* ========================
+   3. ГЛАВНАЯ (HERO-СЕКЦИЯ)
+   ======================== */
+.hero-section {
+    background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+    color: white;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(26, 67, 113, 0.3);
+    position: relative;
+    overflow: hidden;
+}
+
+.hero-section::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 60%);
+    animation: heroFloat 15s infinite linear;
+}
+
+@keyframes heroFloat {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.hero-section .btn {
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(255, 255, 255, 0.2);
+}
+
+.hero-section .btn:hover {
+    transform: translateY(-5px) scale(1.05);
+    box-shadow: 0 8px 25px rgba(255, 255, 255, 0.4);
+}
+
+/* ========================
+   4. КАРТОЧКИ ТОВАРОВ
+   ======================== */
+.card {
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    border: none;
+    border-radius: 15px;
+    overflow: hidden;
+    background: white;
+}
+
+.card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15) !important;
+}
+
+.card-img-top {
+    transition: transform 0.6s ease;
+}
+
+.card:hover .card-img-top {
+    transform: scale(1.05);
+}
+
+.card-footer {
+    background: transparent;
+    border-top: 1px solid #f0f0f0;
+}
+
+/* Кнопка "Подробнее" в карточке */
+.btn-outline-primary {
+    transition: all 0.3s ease;
+    border-radius: 50px;
+}
+
+.btn-outline-primary:hover {
+    transform: scale(1.02);
+    box-shadow: 0 4px 15px rgba(13, 110, 253, 0.3);
+}
+
+/* ========================
+   5. ФИЛЬТРЫ И ПАГИНАЦИЯ
+   ======================== */
+.filter-sidebar {
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+    position: sticky;
+    top: 20px;
+}
+
+.pagination .page-link {
+    border-radius: 50px;
+    margin: 0 5px;
+    transition: all 0.3s ease;
+}
+
+.pagination .page-item.active .page-link {
+    background: linear-gradient(135deg, #1e3c72, #2a5298);
+    border-color: #1e3c72;
+    box-shadow: 0 4px 10px rgba(30, 60, 114, 0.3);
+}
+
+/* ========================
+   6. НАВБАР И ФУТЕР
+   ======================== */
+.navbar {
+    box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(10px);
+}
+
+.navbar-brand {
+    font-weight: 700;
+    letter-spacing: 1px;
+}
+
+.nav-link {
+    transition: color 0.3s ease;
+    position: relative;
+}
+
+.nav-link::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    width: 0;
+    height: 2px;
+    background: white;
+    transition: all 0.3s ease;
+    transform: translateX(-50%);
+}
+
+.nav-link:hover::after {
+    width: 100%;
+}
+
+footer {
+    background: linear-gradient(135deg, #1e3c72, #2a5298);
+    border-top: none;
+    margin-top: 50px !important;
+}
+
+/* ========================
+   7. ФОРМЫ И ИНПУТЫ
+   ======================== */
+.form-control, .form-select {
+    border-radius: 10px;
+    border: 1px solid #e0e0e0;
+    transition: all 0.3s ease;
+}
+
+.form-control:focus, .form-select:focus {
+    box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.15);
+    border-color: #0d6efd;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #1e3c72, #2a5298);
+    border: none;
+    border-radius: 50px;
+    transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 20px rgba(30, 60, 114, 0.4);
+    background: linear-gradient(135deg, #2a5298, #1e3c72);
+}
+
+/* ========================
+   8. ДЕТАЛЬНАЯ СТРАНИЦА
+   ======================== */
+.product-detail-img {
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    transition: transform 0.5s ease;
+}
+
+.product-detail-img:hover {
+    transform: scale(1.02);
+}
+
+.breadcrumb {
+    background: transparent;
+    padding: 0;
+    margin-bottom: 20px;
+}
+
+.breadcrumb-item a {
+    text-decoration: none;
+    color: #6c757d;
+    transition: color 0.3s ease;
+}
+
+.breadcrumb-item a:hover {
+    color: #0d6efd;
+}

@@ -1,0 +1,194 @@
+{% extends 'base.html' %}
+
+{% block title %}Личный кабинет{% endblock %}
+
+{% block content %}
+<h2 class="mb-4 animate-on-scroll"><i class="fas fa-user-circle"></i> Личный кабинет</h2>
+
+<div class="row">
+    <!-- Блок профиля -->
+    <div class="col-md-5 animate-on-scroll delay-1">
+        <div class="card shadow-sm p-4">
+            <h4>Мой профиль</h4>
+            <div id="profileLoading" class="text-center py-3">
+                <div class="spinner-border text-primary" role="status"></div>
+                <p>Загрузка профиля...</p>
+            </div>
+            
+            <div id="profileContent" style="display: none;">
+                <div class="text-center mb-3">
+                    <div class="bg-secondary text-white rounded-circle d-flex align-items-center justify-content-center mx-auto mb-2" style="width: 100px; height: 100px; font-size: 40px;">
+                        {{ user.username|slice:":1"|upper }}
+                    </div>
+                </div>
+
+                <div id="viewMode">
+                    <p><strong>Имя пользователя:</strong> <span id="view_username"></span></p>
+                    <p><strong>Полное имя:</strong> <span id="view_full_name"></span></p>
+                    <p><strong>Email:</strong> <span id="view_email"></span></p>
+                    <p><strong>Телефон:</strong> <span id="view_phone">-</span></p>
+                    <p><strong>Город:</strong> <span id="view_city">-</span></p>
+                    <p><strong>Размер одежды:</strong> <span id="view_size">-</span></p>
+                    <button class="btn btn-primary mt-2" onclick="enableEditMode()">Редактировать</button>
+                </div>
+
+                <div id="editMode" style="display: none;">
+                    <form id="profileForm">
+                        {% csrf_token %}
+                        <div class="mb-2"><label>Полное имя</label><input type="text" id="edit_full_name" class="form-control"></div>
+                        <div class="mb-2"><label>Телефон</label><input type="text" id="edit_phone" class="form-control"></div>
+                        <div class="mb-2"><label>Город</label><input type="text" id="edit_city" class="form-control"></div>
+                        <div class="mb-2"><label>Размер одежды</label>
+                            <select id="edit_size" class="form-select">
+                                <option value="">Не выбран</option>
+                                <option value="XS">XS</option>
+                                <option value="S">S</option>
+                                <option value="M">M</option>
+                                <option value="L">L</option>
+                                <option value="XL">XL</option>
+                                <option value="XXL">XXL</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-success w-100 mt-3">Сохранить</button>
+                        <button type="button" class="btn btn-secondary w-100 mt-2" onclick="disableEditMode()">Отмена</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Блок заказов -->
+    <div class="col-md-7 animate-on-scroll delay-2">
+        <div class="card shadow-sm p-4">
+            <h4>Мои заказы</h4>
+            <div id="ordersLoading" class="text-center py-3">
+                <div class="spinner-border text-primary" role="status"></div>
+                <p>Загрузка заказов...</p>
+            </div>
+            <div id="ordersContent" style="display: none;">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>№</th>
+                            <th>Дата</th>
+                            <th>Сумма</th>
+                            <th>Статус</th>
+                            <th>Действия</th>
+                        </tr>
+                    </thead>
+                    <tbody id="ordersTableBody"></tbody>
+                </table>
+                <p id="noOrdersMsg" class="text-center text-muted" style="display: none;">У вас пока нет заказов.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// ==========================================
+// ЗАГРУЗКА ПРОФИЛЯ
+// ==========================================
+async function loadProfile() {
+    try {
+        const response = await fetch('/api/me/');
+        if (!response.ok) throw new Error('Ошибка загрузки');
+        const data = await response.json();
+        
+        document.getElementById('view_username').textContent = data.user.username;
+        document.getElementById('view_full_name').textContent = data.full_name || 'Не указано';
+        document.getElementById('view_email').textContent = data.user.email;
+        document.getElementById('view_phone').textContent = data.phone || '-';
+        document.getElementById('view_city').textContent = data.city || '-';
+        document.getElementById('view_size').textContent = data.clothing_size || '-';
+        
+        document.getElementById('edit_full_name').value = data.full_name || '';
+        document.getElementById('edit_phone').value = data.phone || '';
+        document.getElementById('edit_city').value = data.city || '';
+        document.getElementById('edit_size').value = data.clothing_size || '';
+        
+        document.getElementById('profileLoading').style.display = 'none';
+        document.getElementById('profileContent').style.display = 'block';
+    } catch (error) {
+        document.getElementById('profileLoading').innerHTML = `<div class="alert alert-danger">Ошибка загрузки профиля. <a href="/login/">Войдите</a></div>`;
+    }
+}
+
+function enableEditMode() {
+    document.getElementById('viewMode').style.display = 'none';
+    document.getElementById('editMode').style.display = 'block';
+}
+
+function disableEditMode() {
+    document.getElementById('editMode').style.display = 'none';
+    document.getElementById('viewMode').style.display = 'block';
+}
+
+document.getElementById('profileForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    const data = {
+        full_name: document.getElementById('edit_full_name').value,
+        phone: document.getElementById('edit_phone').value,
+        city: document.getElementById('edit_city').value,
+        clothing_size: document.getElementById('edit_size').value,
+    };
+    
+    try {
+        const response = await fetch('/api/me/', {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+            },
+            body: JSON.stringify(data)
+        });
+        if (response.ok) {
+            alert('Профиль обновлён!');
+            disableEditMode();
+            loadProfile();
+        } else {
+            alert('Ошибка при обновлении');
+        }
+    } catch (error) {
+        alert('Ошибка сети');
+    }
+});
+
+// ==========================================
+// ЗАГРУЗКА ЗАКАЗОВ
+// ==========================================
+async function loadOrders() {
+    try {
+        const response = await fetch('/api/orders/');
+        if (!response.ok) throw new Error('Ошибка загрузки');
+        const orders = await response.json();
+        
+        const tbody = document.getElementById('ordersTableBody');
+        tbody.innerHTML = '';
+        
+        if (orders.length === 0) {
+            document.getElementById('noOrdersMsg').style.display = 'block';
+        } else {
+            document.getElementById('noOrdersMsg').style.display = 'none';
+            orders.forEach(order => {
+                const row = `<tr>
+                    <td>#${order.id}</td>
+                    <td>${new Date(order.created).toLocaleDateString('ru-RU')}</td>
+                    <td><strong>${order.total_cost} ₽</strong></td>
+                    <td><span class="badge ${order.paid ? 'bg-success' : 'bg-warning text-dark'}">${order.paid ? 'Оплачен' : 'Ожидает оплаты'}</span></td>
+                    <td><button class="btn btn-sm btn-outline-primary" onclick="alert('Детали заказа #${order.id}')">Подробнее</button></td>
+                </tr>`;
+                tbody.innerHTML += row;
+            });
+        }
+        
+        document.getElementById('ordersLoading').style.display = 'none';
+        document.getElementById('ordersContent').style.display = 'block';
+    } catch (error) {
+        document.getElementById('ordersLoading').innerHTML = `<div class="alert alert-danger">Не удалось загрузить заказы</div>`;
+    }
+}
+
+loadProfile();
+loadOrders();
+</script>
+{% endblock %}

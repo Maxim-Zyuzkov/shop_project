@@ -1,0 +1,100 @@
+{% extends 'base.html' %}
+
+{% block title %}Каталог товаров{% endblock %}
+
+{% block content %}
+    <div class="row">
+        <!-- Боковая панель фильтров -->
+        <div class="col-md-3">
+            <div class="filter-sidebar p-4">
+                <h5 class="card-title mb-4"><i class="fas fa-sliders-h me-2"></i>Фильтры</h5>
+                <form method="get">
+                    <div class="mb-3">
+                        <label for="search" class="form-label fw-bold">Поиск</label>
+                        <input type="text" name="q" id="search" class="form-control" placeholder="Название..." value="{{ request.GET.q }}">
+                    </div>
+                    <div class="mb-3">
+                        <label for="category" class="form-label fw-bold">Категория</label>
+                        <select name="category" id="category" class="form-select">
+                            <option value="">Все</option>
+                            {% for cat in categories %}
+                                <option value="{{ cat.id }}" {% if request.GET.category == cat.id|stringformat:"s" %}selected{% endif %}>
+                                    {{ cat.name }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="manufacturer" class="form-label fw-bold">Производитель</label>
+                        <select name="manufacturer" id="manufacturer" class="form-select">
+                            <option value="">Все</option>
+                            {% for man in manufacturers %}
+                                <option value="{{ man.id }}" {% if request.GET.manufacturer == man.id|stringformat:"s" %}selected{% endif %}>
+                                    {{ man.name }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100">Применить</button>
+                    <a href="{% url 'product_list' %}" class="btn btn-outline-secondary w-100 mt-2">Сбросить</a>
+                </form>
+            </div>
+        </div>
+
+        <!-- Сетка товаров -->
+        <div class="col-md-9">
+            <h2 class="mb-4 animate-on-scroll">Товары</h2>
+            <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-3 g-4">
+                {% for product in page_obj %}
+                <div class="col animate-on-scroll delay-{{ forloop.counter|add:5 }}">
+                    <div class="card h-100 shadow-sm">
+                        {% if product.product_image %}
+                            <img src="{{ product.product_image.url }}" class="card-img-top" alt="{{ product.name }}" style="height: 200px; object-fit: cover;">
+                        {% else %}
+                            <img src="https://via.placeholder.com/300x200?text=No+Image" class="card-img-top" alt="No image" style="height: 200px; object-fit: cover;">
+                        {% endif %}
+                        <div class="card-body">
+                            <h5 class="card-title">{{ product.name }}</h5>
+                            <p class="card-text text-muted small">{{ product.description|truncatechars:50 }}</p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <h6 class="card-subtitle mb-0 text-primary fw-bold">{{ product.price }} ₽</h6>
+                                <span class="badge bg-secondary rounded-pill">{{ product.category.name }}</span>
+                            </div>
+                        </div>
+                        <div class="card-footer bg-white border-0 pb-3">
+                            <a href="{% url 'product_detail' product.id %}" class="btn btn-outline-primary w-100">Подробнее</a>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+
+            <!-- Пагинация -->
+            {% if page_obj.has_other_pages %}
+            <nav aria-label="Page navigation" class="mt-5 animate-on-scroll">
+                <ul class="pagination justify-content-center">
+                    {% if page_obj.has_previous %}
+                        <li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}&{{ request.GET.urlencode }}">Назад</a></li>
+                    {% else %}
+                        <li class="page-item disabled"><span class="page-link">Назад</span></li>
+                    {% endif %}
+                    
+                    {% for num in page_obj.paginator.page_range %}
+                        {% if page_obj.number == num %}
+                            <li class="page-item active"><span class="page-link">{{ num }}</span></li>
+                        {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                            <li class="page-item"><a class="page-link" href="?page={{ num }}&{{ request.GET.urlencode }}">{{ num }}</a></li>
+                        {% endif %}
+                    {% endfor %}
+                    
+                    {% if page_obj.has_next %}
+                        <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}&{{ request.GET.urlencode }}">Вперед</a></li>
+                    {% else %}
+                        <li class="page-item disabled"><span class="page-link">Вперед</span></li>
+                    {% endif %}
+                </ul>
+            </nav>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}

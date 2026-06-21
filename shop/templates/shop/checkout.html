@@ -1,0 +1,64 @@
+{% extends 'shop/base.html' %}
+
+{% block title %}Оформление заказа{% endblock %}
+
+{% block content %}
+    <h1>Оформление заказа</h1>
+    
+    <div style="display: flex; gap: 30px; flex-wrap: wrap;">
+        <!-- Форма для ввода данных -->
+        <div style="flex: 2; min-width: 300px;">
+            <form method="post" style="background: #f9f9f9; padding: 20px; border-radius: 8px;">
+                {% csrf_token %}
+                
+                <h3>Данные получателя</h3>
+                
+                <div style="margin-bottom: 15px;">
+                    <label>Имя:</label><br>
+                    <input type="text" name="first_name" required style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+                </div>
+                
+                <div style="margin-bottom: 15px;">
+                    <label>Фамилия:</label><br>
+                    <input type="text" name="last_name" required style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+                </div>
+                
+                <div style="margin-bottom: 15px;">
+                    <label>Email (для чека):</label><br>
+                    <input type="email" name="email" required style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+                </div>
+                
+                <div style="margin-bottom: 15px;">
+                    <label>Город:</label><br>
+                    <input type="text" name="city" required style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+                </div>
+                
+                <div style="margin-bottom: 15px;">
+                    <label>Адрес доставки:</label><br>
+                    <input type="text" name="address" required style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+                </div>
+                
+                <div style="margin-bottom: 15px;">
+                    <label>Почтовый индекс:</label><br>
+                    <input type="text" name="postal_code" required style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+                </div>
+                
+                <button type="submit" class="btn" style="background: #2ecc71; font-size: 18px; padding: 12px 24px; width: 100%;">
+                    ✅ Подтвердить заказ
+                </button>
+            </form>
+        </div>
+        
+        <!-- Блок с итоговой суммой корзины -->
+        <div style="flex: 1; min-width: 250px; background: #ecf0f1; padding: 20px; border-radius: 8px; height: fit-content;">
+            <h3>Ваш заказ</h3>
+            {% for item in cart.items.all %}
+                <div style="display: flex; justify-content: space-between; border-bottom: 1px solid #ddd; padding: 8px 0;">
+                    <span>{{ item.product.name }} <small>x{{ item.quantity }}</small></span>
+                    <span>{{ item.item_price }} ₽</span>
+                </div>
+            {% endfor %}
+            <h3 style="text-align: right; margin-top: 15px;">Итого: {{ cart.total_price }} ₽</h3>
+        </div>
+    </div>
+{% endblock %}

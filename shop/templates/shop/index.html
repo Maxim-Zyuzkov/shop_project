@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Главная - Outdoor Shop{% endblock %}
+
+{% block content %}
+    <!-- Hero-секция -->
+    <div class="p-5 mb-4 hero-section text-white rounded-3 animate-on-scroll">
+        <div class="container-fluid py-5">
+            <h1 class="display-5 fw-bold animate-on-scroll delay-1">
+                <i class="fas fa-mountain"></i> Outdoor Shop
+            </h1>
+            <p class="col-md-8 fs-4 animate-on-scroll delay-2">
+                Лучшая экипировка для активного отдыха. Куртки, кепки и термобелье для любых приключений!
+            </p>
+            <a href="{% url 'product_list' %}" class="btn btn-light btn-lg animate-on-scroll delay-3">
+                Перейти в каталог <i class="fas fa-arrow-right ms-2"></i>
+            </a>
+        </div>
+    </div>
+
+    <!-- Популярные товары -->
+    <h2 class="text-center my-5 animate-on-scroll">🔥 Популярные товары</h2>
+    <div class="row row-cols-1 row-cols-md-3 g-4">
+        {% for product in products %}
+        <div class="col animate-on-scroll delay-{{ forloop.counter }}">
+            <div class="card h-100 shadow-sm">
+                {% if product.product_image %}
+                    <img src="{{ product.product_image.url }}" class="card-img-top" alt="{{ product.name }}" style="height: 250px; object-fit: cover;">
+                {% else %}
+                    <img src="https://via.placeholder.com/300x250?text=No+Image" class="card-img-top" alt="No image" style="height: 250px; object-fit: cover;">
+                {% endif %}
+                <div class="card-body">
+                    <h5 class="card-title">{{ product.name }}</h5>
+                    <p class="card-text text-muted">{{ product.description|truncatechars:60 }}</p>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h6 class="card-subtitle mb-0 text-primary fw-bold">{{ product.price }} ₽</h6>
+                        <span class="badge bg-success rounded-pill">В наличии</span>
+                    </div>
+                </div>
+                <div class="card-footer bg-white border-0 pb-3">
+                    <a href="{% url 'product_detail' product.id %}" class="btn btn-outline-primary w-100">Подробнее</a>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <p class="text-center">Товаров пока нет.</p>
+        {% endfor %}
+    </div>
+
+    <!-- Категории -->
+    <h2 class="text-center my-5 animate-on-scroll">📂 Категории</h2>
+    <div class="row row-cols-1 row-cols-md-3 g-4 mb-5">
+        {% for category in categories %}
+        <div class="col animate-on-scroll delay-{{ forloop.counter|add:3 }}">
+            <a href="{% url 'product_list' %}?category={{ category.id }}" class="text-decoration-none">
+                <div class="card h-100 text-white bg-secondary category-card" style="background: linear-gradient(135deg, #2a5298, #1e3c72); transition: transform 0.3s;">
+                    <div class="card-body text-center">
+                        <h5 class="card-title fs-4">{{ category.name }}</h5>
+                        <p class="card-text opacity-75">{{ category.description|truncatechars:50 }}</p>
+                        <span class="badge bg-light text-dark rounded-pill">Перейти <i class="fas fa-chevron-right ms-1"></i></span>
+                    </div>
+                </div>
+            </a>
+        </div>
+        {% empty %}
+        <p class="text-center">Категории не созданы.</p>
+        {% endfor %}
+    </div>
+{% endblock %}

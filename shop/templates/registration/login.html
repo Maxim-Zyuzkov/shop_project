@@ -1,0 +1,27 @@
+{% extends 'shop/base.html' %}
+
+{% block title %}Вход в систему{% endblock %}
+
+{% block content %}
+    <h1>Вход в личный кабинет</h1>
+    
+    <form method="post" style="max-width: 400px; margin: 0 auto;">
+        {% csrf_token %}
+        
+        <div style="margin-bottom: 15px;">
+            <label for="id_username">Имя пользователя:</label><br>
+            <input type="text" name="username" id="id_username" class="form-control" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;" required>
+        </div>
+        
+        <div style="margin-bottom: 15px;">
+            <label for="id_password">Пароль:</label><br>
+            <input type="password" name="password" id="id_password" class="form-control" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;" required>
+        </div>
+        
+        <button type="submit" class="btn" style="width: 100%; background: #2c3e50;">Войти</button>
+    </form>
+    
+    <p style="text-align: center; margin-top: 20px;">
+        Нет аккаунта? <a href="/admin/">Создайте его в админке</a>
+    </p>
+{% endblock %}
