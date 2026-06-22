@@ -49,7 +49,7 @@
         
         <div style="text-align: right; margin-top: 20px;">
             <a href="{% url 'product_list' %}" class="btn">Продолжить покупки</a>
-            <button class="btn" style="background: #2ecc71;">Оформить заказ (скоро)</button>
+<a href="{% url 'checkout' %}" class="btn" style="background: #2ecc71;">Оформить заказ</a>
         </div>
     {% else %}
         <p>Ваша корзина пуста. <a href="{% url 'product_list' %}">Перейти к покупкам</a></p>
