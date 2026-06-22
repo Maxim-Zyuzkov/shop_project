@@ -19,6 +19,12 @@ ALLOWED_HOSTS = [
     '127.0.0.1',
     'shopproject-production-6699.up.railway.app',
 ]
+
+
+CSRF_TRUSTED_ORIGINS = [
+    'https://shopproject-production-6699.up.railway.app',
+]
+
 # ==========================================
 # ПРИЛОЖЕНИЯ
 # ==========================================
