@@ -45,7 +45,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-ROOT_URLCONF = 'outdoor_shop.urls'
+ROOT_URLCONF = 'shop_project.urls'
 
 TEMPLATES = [
     {
@@ -62,8 +62,7 @@ TEMPLATES = [
         },
     },
 ]
-
-WSGI_APPLICATION = 'outdoor_shop.wsgi.application'
+WSGI_APPLICATION = 'shop_project.wsgi.application'
 
 # ==========================================
 # БАЗА ДАННЫХ (через dj-database-url)
